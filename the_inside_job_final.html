@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Inside Job — A Detective Story About Cancer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --noir: #0d0c0a;
+  --smoke: #1a1814;
+  --ash: #2a2820;
+  --fog: #3d3b35;
+  --paper: #e8e0cc;
+  --aged: #c8b88a;
+  --gold: #c9a84c;
+  --red: #8b1a1a;
+  --dim: #7a7060;
+  --steel: #3d5a6e;
+  --green: #4a6741;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--noir);
+  color:var(--paper);
+  font-family:'Courier Prime','Courier New',monospace;
+  font-size:16px;
+  line-height:1.85;
+  overflow-x:hidden;
+}
+#rain{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.15;}
+.book{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 1.5rem 5rem;}
+
+/* ── COVER ── */
+.cover{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  padding:4rem 2rem;position:relative;border-bottom:1px solid var(--fog);
+}
+.cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#1a1200 0%,transparent 70%);pointer-events:none;}
+.lamp{position:absolute;top:0;left:50%;transform:translateX(-50%);width:2px;height:220px;background:linear-gradient(to bottom,transparent,var(--gold) 40%,transparent);opacity:0.35;}
+.lamp::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:320px;height:320px;background:radial-gradient(ellipse,rgba(201,168,76,0.1) 0%,transparent 70%);}
+.cover-eyebrow{font-size:0.68rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--dim);margin-bottom:1.8rem;position:relative;}
+.cover h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.2rem,9vw,6.5rem);letter-spacing:0.05em;line-height:0.9;color:var(--gold);text-shadow:0 0 60px rgba(201,168,76,0.25),3px 3px 0 #3a2a00;margin-bottom:0.4rem;position:relative;}
+.cover h1 span{display:block;font-size:0.42em;color:var(--paper);letter-spacing:0.18em;text-shadow:none;}
+.cover-sub{font-family:'Special Elite',cursive;font-size:1.05rem;color:var(--aged);margin:1.5rem 0 0.6rem;font-style:italic;max-width:520px;position:relative;}
+.cover-byline{font-size:0.7rem;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;position:relative;margin-bottom:2.5rem;}
+.start-btn{background:none;border:1px solid var(--gold);color:var(--gold);font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;padding:0.8rem 2.2rem;cursor:pointer;transition:all 0.3s;position:relative;}
+.start-btn:hover{background:var(--gold);color:var(--noir);}
+
+/* ── TOC ── */
+.toc{display:none;padding:3rem 0;border-bottom:1px solid var(--fog);}
+.toc.visible{display:block;}
+.toc-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.3rem;}
+.toc-sub{color:var(--dim);font-size:0.8rem;margin-bottom:2rem;font-style:italic;}
+.toc-list{display:flex;flex-direction:column;gap:0.4rem;}
+.toc-row{display:flex;align-items:baseline;gap:1rem;cursor:pointer;padding:0.65rem 1rem;border-left:2px solid transparent;transition:all 0.2s;border-radius:0 4px 4px 0;}
+.toc-row:hover{border-color:var(--gold);background:var(--ash);}
+.toc-row.active{border-color:var(--red);background:var(--ash);}
+.toc-num{font-family:'Bebas Neue',sans-serif;color:var(--red);font-size:1.3rem;min-width:2.2rem;}
+.toc-name{font-family:'Special Elite',cursive;font-size:1.05rem;color:var(--paper);}
+.toc-tag{font-size:0.68rem;color:var(--dim);margin-left:auto;letter-spacing:0.1em;}
+
+/* ── CHAPTERS ── */
+.chapter{display:none;padding:3.5rem 0;border-bottom:1px solid var(--fog);animation:fadeUp 0.5s ease;}
+.chapter.visible{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+.ch-label{font-size:0.66rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--red);margin-bottom:0.4rem;}
+.ch-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.4rem);letter-spacing:0.06em;color:var(--gold);line-height:1;margin-bottom:0.5rem;}
+.ch-flavor{font-family:'Special Elite',cursive;font-size:0.92rem;color:var(--dim);font-style:italic;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--fog);}
+
+.story p{margin-bottom:1.25rem;color:var(--paper);}
+.story p.narration{color:var(--aged);font-style:italic;padding-left:1.5rem;border-left:2px solid var(--fog);margin-bottom:1.25rem;}
+.story p.hook{font-family:'Special Elite',cursive;font-size:1.05rem;color:var(--gold);margin:2rem 0;}
+.story h3{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:var(--gold);margin:2.2rem 0 0.8rem;}
+
+/* ── WANTED ── */
+.wanted{background:var(--paper);color:var(--noir);text-align:center;padding:1.6rem 1.8rem;margin:2rem 0;border:3px solid var(--noir);box-shadow:5px 5px 0 var(--fog);font-family:'Special Elite',cursive;}
+.wanted-top{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.3em;color:var(--red);border-bottom:2px solid #333;padding-bottom:0.5rem;margin-bottom:1rem;}
+.wanted h3{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:0.1em;margin-bottom:0.4rem;}
+.wanted p{font-size:0.85rem;line-height:1.7;color:#2a2010;}
+.wanted-reward{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.18em;color:var(--red);margin-top:1rem;border-top:2px solid #333;padding-top:0.8rem;}
+
+/* ── CASE FILE ── */
+.case-file{background:var(--smoke);border:1px solid var(--fog);border-top:3px solid var(--gold);padding:1.5rem 1.8rem;margin:2rem 0;position:relative;}
+.case-file::before{content:'📁 CASE FILE';position:absolute;top:-0.65rem;left:1rem;background:var(--gold);color:var(--noir);font-size:0.6rem;letter-spacing:0.2em;padding:0.1rem 0.6rem;font-weight:700;}
+.case-file h4{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.1em;color:var(--gold);margin-bottom:0.8rem;}
+.case-file p,.case-file li{font-size:0.9rem;color:var(--aged);margin-bottom:0.5rem;}
+.case-file ul{padding-left:1.4rem;}
+.case-file li{list-style:'→ ';margin-bottom:0.4rem;}
+
+/* ── TELEGRAM ── */
+.telegram{background:#f5f0e0;color:#1a1008;font-family:'Special Elite',cursive;padding:1.5rem 2rem;margin:2rem 0;border:1px solid #c8b888;}
+.telegram::before{content:'TELEGRAM — URGENT';display:block;font-family:'Courier Prime',monospace;font-size:0.64rem;letter-spacing:0.25em;color:var(--red);margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1px solid #c8b888;}
+.telegram p{font-size:0.9rem;line-height:1.9;color:#1a1008;}
+
+/* ── COURSE CONNECTION ── */
+.course-box{background:#0d1a0d;border:1px solid #3a5a3a;border-left:4px solid #6a9a6a;padding:1.2rem 1.5rem;margin:2rem 0;}
+.course-box-label{font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:#6a9a6a;margin-bottom:0.5rem;}
+.course-box p{font-size:0.9rem;color:#a0c8a0;}
+
+/* ── EVIDENCE TABLE ── */
+.ev-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:0.85rem;}
+.ev-table th{background:var(--ash);color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:0.92rem;letter-spacing:0.1em;padding:0.7rem 1rem;text-align:left;border:1px solid var(--fog);}
+.ev-table td{padding:0.65rem 1rem;border:1px solid var(--fog);color:var(--aged);vertical-align:top;}
+.ev-table tr:nth-child(even) td{background:var(--smoke);}
+
+/* ── DOSSIER GRID ── */
+.dossier{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+@media(max-width:600px){.dossier{grid-template-columns:1fr;}}
+.dossier-card{background:var(--smoke);border:1px solid var(--fog);padding:1.2rem;}
+.dossier-card h5{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.dossier-card.for h5{color:#6a9a6a;}
+.dossier-card.against h5{color:var(--red);}
+.dossier-card p{font-size:0.83rem;color:var(--aged);line-height:1.65;}
+.assessment{background:var(--ash);border-left:3px solid var(--gold);padding:1rem 1.3rem;margin:1rem 0 2rem;font-size:0.88rem;color:var(--aged);}
+.assessment strong{color:var(--gold);}
+.dispute-h{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.1em;color:var(--gold);margin:2.5rem 0 1rem;}
+
+/* ── Q&A ── */
+.qa-item{background:var(--smoke);border:1px solid var(--fog);margin-bottom:1rem;overflow:hidden;}
+.qa-q{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1rem 1.2rem;cursor:pointer;transition:background 0.2s;}
+.qa-q:hover{background:var(--ash);}
+.qa-q-text{flex:1;color:var(--paper);font-size:0.9rem;}
+.qa-badge{font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.5rem;border-radius:2px;white-space:nowrap;margin-top:0.15rem;}
+.b-recall{background:var(--fog);color:var(--aged);}
+.b-apply{background:#1a2d1a;color:#88c888;}
+.b-tf{background:#1a2030;color:#88a8d0;}
+.b-think{background:#2a1a00;color:var(--gold);}
+.b-math{background:#1a0a2a;color:#c088e0;}
+.qa-arrow{color:var(--dim);transition:transform 0.25s;font-size:1.1rem;}
+.qa-item.open .qa-arrow{transform:rotate(90deg);}
+.qa-a{display:none;padding:1rem 1.2rem 1.3rem;border-top:1px solid var(--fog);background:var(--noir);}
+.qa-item.open .qa-a{display:block;}
+.qa-a-label{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#6a9a6a;margin-bottom:0.6rem;}
+.qa-a p{font-size:0.88rem;color:var(--aged);margin-bottom:0.5rem;}
+
+/* ── CITATION ── */
+.cite{font-size:0.75rem;color:var(--dim);font-style:italic;margin-top:0.2rem;}
+
+/* ── SOURCES ── */
+.sources{background:var(--smoke);border:1px solid var(--fog);padding:1.5rem 1.8rem;margin:2.5rem 0 0;font-size:0.78rem;}
+.sources-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.15em;color:var(--dim);margin-bottom:1rem;}
+.sources p{color:var(--dim);line-height:1.7;margin-bottom:0.5rem;}
+
+/* ── NAV CONTROLS ── */
+.nav-controls{display:flex;justify-content:space-between;align-items:center;padding:2.5rem 0 0;gap:1rem;}
+.nav-btn{background:none;border:1px solid var(--fog);color:var(--aged);font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.7rem 1.3rem;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
+.nav-btn:disabled{opacity:0.3;cursor:default;}
+.nav-pg{font-family:'Bebas Neue',sans-serif;color:var(--dim);font-size:1.1rem;}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--gold);transition:width 0.3s;z-index:999;}
+
+/* ── GRAPHIC WRAPPERS ── */
+.graphic-block{margin:2.5rem 0;}
+.graphic-block svg{width:100%;height:auto;display:block;}
+.graphic-block figcaption{font-family:'Special Elite',cursive;font-size:0.82rem;color:var(--dim);font-style:italic;margin-top:0.8rem;text-align:center;border-top:1px solid var(--fog);padding-top:0.6rem;}
+
+/* ── TERM highlight ── */
+.term{color:var(--gold);font-weight:700;}
+
+/* ── FOOTER ── */
+footer{background:var(--ash);color:var(--dim);text-align:center;padding:2rem;font-size:0.68rem;letter-spacing:0.1em;margin-top:2rem;}
+footer span{color:var(--gold);}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="pgbar"></div>
+<canvas id="rain"></canvas>
+
+<div class="book">
+
+<!-- ══════════════ COVER ══════════════ -->
+<div class="cover" id="cover">
+  <div class="lamp"></div>
+  <div class="cover-eyebrow">HSCI 324 · Human Population Genetics &amp; Evolution · Learning Project</div>
+  <h1>The Inside Job<span>A Detective Story</span></h1>
+  <p class="cover-sub">"The cell responsible for keeping you alive may also be the one responsible for your death. The case has been open for 600 million years."</p>
+  <p class="cover-byline">Investigated by Detective Mark · Somatic Crimes Unit · Precinct 10<br>Belle Ng [301585580] · Martin Luu [301582666] · Pretty Gill [301584547]</p>
+  <button class="start-btn" onclick="startReading()">▶ Open the Case File</button>
+</div>
+
+<!-- ══════════════ TOC ══════════════ -->
+<div class="toc" id="toc">
+  <div class="toc-title">Case Dossier</div>
+  <p class="toc-sub">Seven chapters. A crime written into every cell of the human body.</p>
+  <div class="toc-list">
+    <div class="toc-row" onclick="goChapter(0)"><span class="toc-num">00</span><span class="toc-name">Case File Opens</span><span class="toc-tag">Introduction</span></div>
+    <div class="toc-row" onclick="goChapter(1)"><span class="toc-num">01</span><span class="toc-name">The Crime Scene</span><span class="toc-tag">Stem Cell Properties</span></div>
+    <div class="toc-row" onclick="goChapter(2)"><span class="toc-num">02</span><span class="toc-name">The Long Game</span><span class="toc-tag">Evolutionary Trade-Off</span></div>
+    <div class="toc-row" onclick="goChapter(3)"><span class="toc-num">03</span><span class="toc-name">Evolution's Black Market</span><span class="toc-tag">Somatic Evolution</span></div>
+    <div class="toc-row" onclick="goChapter(4)"><span class="toc-num">04</span><span class="toc-name">Conflicting Witnesses</span><span class="toc-tag">Scientific Disputes</span></div>
+    <div class="toc-row" onclick="goChapter(5)"><span class="toc-num">05</span><span class="toc-name">The Interrogation Room</span><span class="toc-tag">Q &amp; A</span></div>
+    <div class="toc-row" onclick="goChapter(6)"><span class="toc-num">06</span><span class="toc-name">Closing the File</span><span class="toc-tag">Conclusion</span></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 00 — INTRO
+══════════════════════════════════════ -->
+<div class="chapter" id="ch0">
+  <div class="ch-label">Chapter 00 · Introduction</div>
+  <div class="ch-title">Case File Opens</div>
+  <div class="ch-flavor">In which Detective Mark takes on the oldest cold case in history</div>
+  <div class="story">
+
+    <p class="narration">It was raining the day they called me in. The kind of rain that perfectly sets the scene for a crime mystery.</p>
+
+    <p>Hello everyone, let me introduce myself. My name is Mark. Better known as Detective Mark. I work in the deep depths of the human body — the stem cell districts, the quiet alleys where cells work to divide day and night to keep the body running. Around thirty-seven trillion human cell residents reside in this metropolis of skin, each with their own jobs to do, following the same rules. Most of them cooperate, divide when they're told to divide, die when they're told to die, keep to their districts. A beautiful, brutal social contract that's been running for the last 600 million years.</p>
+
+    <p class="hook">Most of the cells follow the rules. Only, most of them...</p>
+
+    <p>The case I'm about to walk you through is perhaps one of the oldest in the books. It predates nations, whole family lineages, even fossils. Multicellular life has existed for 600 million years and this same crime repeatedly keeps showing up at the scene.</p>
+
+    <div class="wanted">
+      <div class="wanted-top">⚠ WANTED ⚠</div>
+      <h3>CANCER</h3>
+      <p><strong>Last Seen:</strong> In virtually every multicellular organism that has ever lived<br>
+      <strong>Historical Record:</strong> Tumours discovered in fossilised bones going back millions of years. Palaeontologists have found signs of cancer in dinosaurs — vertebrae marked by abnormal growths preserved in stone (Rothschild et al., 2003)<br>
+      <strong>Known Aliases:</strong> "Malfunction," "Random Error," "Bad Luck," "Disease"<br>
+      <strong>Distinguishing Feature:</strong> Not a foreign invader. Comes from inside the house.</p>
+      <div class="wanted-reward">THE REAL QUESTION: Why has 600 million years of evolution never eliminated this crime?</div>
+    </div>
+
+    <p>The strange part of this case is that it isn't a guessing game. We aren't trying to find the culprit — we already know who it is. We've known the suspect for a long time. The culprit just so happens to be one of our own cells.</p>
+
+    <p>The real question, the one that keeps landing on my desk in a case file, is why this crime keeps occurring at all. Why even after hundreds of millions of years of natural selection, evolution has never eliminated the possibility of cancer?</p>
+
+    <p class="narration">Cancer has affected humans since prehistoric times. However, the prevalence has increased dramatically in recent decades. Part of the explanation is simple — people live longer. The longer the body runs, the more opportunities cells have to accumulate mutations. More ageing populations means more time for the crime to unfold (Hulvat, 2020). But that is not the whole story.</p>
+
+    <p>In the past half century, the number of case files has multiplied along with changes associated with human behaviour and the environment. New layers have been added to the investigation due to increased exposure from carcinogens — from pollution to chemicals found in consumer products (Franken et al., 2017). Still, these factors only explain part of the picture.</p>
+
+    <div class="telegram">
+      <p>What every textbook gets wrong about this case — they treat cancer like an accident. A random error. A molecule misfiring. Bad luck in a dark alley. There is truth to that. But it misses the deeper story. <strong>STOP</strong> — The deeper story is that the cell that becomes cancer was built to do almost everything it ends up doing. Divide without stopping. Resist death. Renew itself repeatedly. These aren't criminal acts it learned on the street. They're its original programming. The programming that keeps you alive. <strong>STOP</strong></p>
+    </div>
+
+    <p>Stem cells are the body's maintenance crew. Your intestinal lining replaces itself around every five days — stem cells handle that. Your bone marrow produces around 200 billion red blood cells every day — stem cells handle that too. Skin, hair follicles, immune cells. All come from stem cells. They divide fast, live long, and refuse to die on command (McCulloch &amp; Till, 2005).</p>
+
+    <p class="narration">The Nobel laureate François Jacob once wrote: "The dream of every cell is to become two cells." That dream is what keeps you alive. It is also, as we will see, the origin of the crime.</p>
+
+    <p>The exact properties — the ones evolution spent hundreds of millions of years building, the ones that are genuinely keeping you alive right now — are the same properties that make cancer not just possible, but inevitable over a long enough timeline.</p>
+
+    <div class="course-box">
+      <div class="course-box-label">📚 Course Connection — HSCI 324</div>
+      <p>This case connects to the HSCI 324 theme that <strong>adaptations shaped by selection can carry disadvantages under certain circumstances.</strong> Properties of stem cells were selected for because of their benefits to survival, but the cost is cancer that becomes probable over a human lifespan of many accumulated divisions.</p>
+    </div>
+
+    <p>That is the case. Not <em>what</em> cancer does — but <em>why</em> cancer is the inevitable shadow of the very system that keeps you alive. We've got a case to crack.</p>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <p>Franken, C. et al. (2017). Environmental exposure to human carcinogens in teenagers and the association with DNA damage. <em>Environmental Research, 152</em>, 165–174.</p>
+      <p>Hulvat, M. C. (2020). Cancer Incidence and Trends. <em>Surgical Clinics of North America, 100</em>(3), 469–481.</p>
+      <p>McCulloch, E. A., &amp; Till, J. E. (2005). Perspectives on the properties of stem cells. <em>Nature Medicine, 11</em>(10), 1026–1028.</p>
+      <p>Rothschild, B. M. et al. (2003). Epidemiologic study of tumors in dinosaurs. <em>Naturwissenschaften, 90</em>(11), 495–500.</p>
+      <p>Sender, R., Fuchs, S., &amp; Milo, R. (2016). Revised Estimates for the Number of Human and Bacteria Cells in the Body. <em>PLOS Biology, 14</em>(8), e1002533.</p>
+      <p>Jacob, F. (1973). <em>The Logic of Life: A History of Heredity.</em> Pantheon Books.</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="showTOC()">↩ Case Dossier</button>
+    <span class="nav-pg">00 / 06</span>
+    <button class="nav-btn" onclick="goChapter(1)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 01 — STEM CELL PROPERTIES
+══════════════════════════════════════ -->
+<div class="chapter" id="ch1">
+  <div class="ch-label">Chapter 01 · Stem Cell Properties</div>
+  <div class="ch-title">The Crime Scene</div>
+  <div class="ch-flavor">In which we understand the environment where the crime occurred</div>
+  <div class="story">
+
+    <p class="narration">Every investigation begins with understanding the environment where the crime occurred. In this case, the human body is the environment — a massive, tightly coordinated city of over 37 trillion cells. Most members of this community live short, predictable lives. They perform their tasks, divide a few times, and eventually retire through programmed cell death.</p>
+
+    <p class="hook">But not all cells obey the law.</p>
+
+    <p>Stem cells operate under their own set of rules. They are the body's permanent repair and maintenance crew, responsible for maintaining organs that constantly experience wear and tear. The intestinal epithelium is one of the most rapidly renewing tissues in the body, replaced approximately every four to five days through the activity of intestinal stem cells. Haematopoietic stem cells in bone marrow continually generate new blood cells to maintain circulation. Without these regenerative stem cell populations, tissues would quickly deteriorate and fail (Clevers, 2011).</p>
+
+    <!-- GRAPHIC 1 — TISSUE RENEWAL SYSTEM -->
+    <div class="graphic-block">
+      <svg viewBox="0 0 820 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="gg1"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="gg2"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <radialGradient id="rg-stem" cx="38%" cy="32%"><stop offset="0%" stop-color="#2e2600"/><stop offset="100%" stop-color="#0f0d00"/></radialGradient>
+          <radialGradient id="rg-prog" cx="38%" cy="32%"><stop offset="0%" stop-color="#1a2e00"/><stop offset="100%" stop-color="#080f00"/></radialGradient>
+          <radialGradient id="rg-diff" cx="38%" cy="32%"><stop offset="0%" stop-color="#002030"/><stop offset="100%" stop-color="#000a14"/></radialGradient>
+          <radialGradient id="rg-dead" cx="38%" cy="32%"><stop offset="0%" stop-color="#280000"/><stop offset="100%" stop-color="#0a0000"/></radialGradient>
+          <marker id="ma1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#c9a84c" opacity="0.65"/></marker>
+          <marker id="ma2" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#6b6355" opacity="0.7"/></marker>
+          <marker id="ma3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b1a1a" opacity="0.7"/></marker>
+        </defs>
+        <rect width="820" height="340" fill="#0d0c0a" rx="6"/>
+        <rect x="0" y="0" width="820" height="40" fill="#111008" rx="6"/>
+        <rect x="0" y="37" width="820" height="3" fill="#c9a84c" opacity="0.6"/>
+        <text x="26" y="25" font-family="'Bebas Neue',sans-serif" font-size="14" fill="#c9a84c" letter-spacing="3">EVIDENCE FILE</text>
+        <text x="130" y="25" font-family="'Courier Prime',monospace" font-size="10" fill="#4a4840" letter-spacing="1.5">·  TISSUE RENEWAL SYSTEM  ·  THE BODY'S MAINTENANCE CREW</text>
+        <!-- Self-renewal loop -->
+        <path d="M 80,128 C 56,103 56,143 80,148" stroke="#c9a84c" stroke-width="1.2" fill="none" stroke-dasharray="4,2.5" opacity="0.65"/>
+        <polygon points="78,148 87,143 84,155" fill="#c9a84c" opacity="0.65"/>
+        <text x="22" y="124" font-family="'Courier Prime',monospace" font-size="8" fill="#c9a84c" opacity="0.65">self-</text>
+        <text x="18" y="134" font-family="'Courier Prime',monospace" font-size="8" fill="#c9a84c" opacity="0.65">renewal</text>
+        <!-- STEM CELL -->
+        <circle cx="112" cy="155" r="36" fill="url(#rg-stem)" stroke="#c9a84c" stroke-width="2" filter="url(#gg1)"/>
+        <ellipse cx="112" cy="149" rx="14" ry="12" fill="#2a2000" stroke="#c9a84c" stroke-width="1.2" opacity="0.9"/>
+        <path d="M 105,144 C 108,138 116,138 119,144 C 116,150 108,150 105,144" stroke="#c9a84c" stroke-width="0.9" fill="none" opacity="0.55"/>
+        <text x="112" y="202" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="10" fill="#c9a84c" font-weight="700">STEM CELL</text>
+        <text x="112" y="215" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#6b6355">Permanent · Multipotent</text>
+        <!-- Arrow stem→prog -->
+        <line x1="152" y1="155" x2="218" y2="155" stroke="#c9a84c" stroke-width="1.5" marker-end="url(#ma1)" opacity="0.6"/>
+        <text x="185" y="146" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">divides</text>
+        <!-- PROGENITORS -->
+        <circle cx="256" cy="138" r="27" fill="url(#rg-prog)" stroke="#7ab04a" stroke-width="1.7"/>
+        <ellipse cx="256" cy="133" rx="11" ry="9" fill="#1a2e00" stroke="#7ab04a" stroke-width="1" opacity="0.85"/>
+        <circle cx="276" cy="172" r="23" fill="url(#rg-prog)" stroke="#7ab04a" stroke-width="1.5" opacity="0.8"/>
+        <text x="266" y="215" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="10" fill="#7ab04a" font-weight="700">PROGENITOR</text>
+        <text x="266" y="228" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#6b6355">Rapid division</text>
+        <!-- Arrow prog→diff -->
+        <line x1="304" y1="155" x2="372" y2="155" stroke="#6b6355" stroke-width="1.4" marker-end="url(#ma2)" opacity="0.7"/>
+        <text x="338" y="146" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">specialises</text>
+        <!-- DIFFERENTIATED -->
+        <rect x="386" y="120" width="44" height="33" rx="6" fill="url(#rg-diff)" stroke="#5a9ab0" stroke-width="1.6"/>
+        <ellipse cx="408" cy="132" rx="9" ry="7" fill="#001828" stroke="#5a9ab0" stroke-width="0.9" opacity="0.85"/>
+        <text x="408" y="163" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#5a9ab0">gut lining</text>
+        <ellipse cx="458" cy="155" rx="25" ry="17" fill="url(#rg-diff)" stroke="#5a9ab0" stroke-width="1.6" opacity="0.88"/>
+        <text x="458" y="182" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#5a9ab0">blood cell</text>
+        <polygon points="502,141 524,132 546,141 546,169 524,178 502,169" fill="url(#rg-diff)" stroke="#5a9ab0" stroke-width="1.5" opacity="0.78"/>
+        <text x="524" y="196" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#5a9ab0">skin cell</text>
+        <text x="466" y="225" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="10" fill="#5a9ab0" font-weight="700">SPECIALISED CELLS</text>
+        <text x="466" y="238" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#6b6355">Functional · No self-renewal</text>
+        <!-- Arrow diff→death -->
+        <line x1="556" y1="155" x2="610" y2="155" stroke="#6b6355" stroke-width="1.4" marker-end="url(#ma2)" opacity="0.6"/>
+        <text x="583" y="146" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">ages / damage</text>
+        <!-- APOPTOSIS -->
+        <circle cx="655" cy="155" r="34" fill="url(#rg-dead)" stroke="#5a2a2a" stroke-width="1.8" stroke-dasharray="5,3"/>
+        <circle cx="638" cy="141" r="10" fill="#280000" stroke="#5a2a2a" stroke-width="1" opacity="0.75"/>
+        <circle cx="668" cy="139" r="8" fill="#280000" stroke="#5a2a2a" stroke-width="1" opacity="0.65"/>
+        <circle cx="668" cy="168" r="8" fill="#280000" stroke="#5a2a2a" stroke-width="1" opacity="0.6"/>
+        <circle cx="648" cy="153" r="10" fill="#3a0000" stroke="#8b1a1a" stroke-width="0.9" opacity="0.8"/>
+        <line x1="642" y1="147" x2="654" y2="159" stroke="#8b1a1a" stroke-width="1.8" opacity="0.8"/>
+        <line x1="654" y1="147" x2="642" y2="159" stroke="#8b1a1a" stroke-width="1.8" opacity="0.8"/>
+        <text x="655" y="202" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="10" fill="#8b1a1a" font-weight="700">APOPTOSIS</text>
+        <text x="655" y="215" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#6b6355">Programmed death</text>
+        <!-- Real world examples strip -->
+        <rect x="24" y="252" width="772" height="72" rx="4" fill="#111008" stroke="#2a2820" stroke-width="1"/>
+        <text x="42" y="270" font-family="'Courier Prime',monospace" font-size="8.5" fill="#4a4840" letter-spacing="2">REAL-WORLD EVIDENCE ·</text>
+        <circle cx="170" cy="266" r="3.5" fill="#c9a84c"/>
+        <text x="180" y="270" font-family="'Courier Prime',monospace" font-size="9" fill="#c8b88a">Intestinal epithelium replaced every 4–5 days via intestinal stem cells (Clevers, 2011)</text>
+        <circle cx="170" cy="288" r="3.5" fill="#c9a84c"/>
+        <text x="180" y="292" font-family="'Courier Prime',monospace" font-size="9" fill="#c8b88a">Haematopoietic stem cells generate ~200 billion blood cells per day (Poliwoda et al., 2022)</text>
+        <circle cx="170" cy="308" r="3.5" fill="#8b1a1a"/>
+        <text x="180" y="312" font-family="'Courier Prime',monospace" font-size="9" fill="#c8b88a">Without stem cells, tissues deteriorate and fail — but every division risks a copying error</text>
+        <rect x="1" y="1" width="818" height="338" fill="none" stroke="#2a2820" stroke-width="1.5" rx="6"/>
+      </svg>
+      <figcaption>"This diagram shows a generalised model. In reality, different tissues contain their own specialised stem cell populations — e.g. intestinal stem cells, haematopoietic stem cells, and neural stem cells — each generating the specific cell types their tissue requires."</figcaption>
+    </div>
+
+    <p>To continuously undergo this workload, stem cells possess abilities that most other cells do not. They are able to divide repeatedly, resulting in infinite self-renewal, and survive for long periods. Simultaneously, they generate specialised daughter cells that replace damaged or ageing tissue. These properties allow tissues to maintain stability across decades and are essential for normal regeneration and repair (Poliwoda et al., 2022).</p>
+
+    <p>From an evolutionary perspective, these abilities represent adaptations that were strongly favoured by natural selection. Organisms capable of repairing injury and maintaining internal systems would have had significant survival advantages.</p>
+
+    <p class="hook">But these privileges come with a cost.</p>
+
+    <p>Every time a stem cell divides, its DNA must be copied. Although DNA replication is highly accurate, mutation errors may occur. Over millions of divisions across a lifetime, these errors accumulate and introduce genetic variation amongst cells. While most mutations may be harmless, some affect genes controlling cell growth or survival. When this occurs, a mutated cell may gain a selective advantage over neighbouring cells and begin expanding within the tissue environment (Greaves &amp; Maley, 2012).</p>
+
+    <!-- GRAPHIC 2 — MUTATION TIMELINE -->
+    <div class="graphic-block">
+      <svg viewBox="0 0 820 310" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="tg1"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="tg2"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="tg3"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <radialGradient id="tc0" cx="38%" cy="32%"><stop offset="0%" stop-color="#2e2600"/><stop offset="100%" stop-color="#0f0d00"/></radialGradient>
+          <radialGradient id="tc1" cx="38%" cy="32%"><stop offset="0%" stop-color="#2e1c00"/><stop offset="100%" stop-color="#0f0800"/></radialGradient>
+          <radialGradient id="tc2" cx="38%" cy="32%"><stop offset="0%" stop-color="#2e1000"/><stop offset="100%" stop-color="#0f0400"/></radialGradient>
+          <radialGradient id="tc3" cx="38%" cy="32%"><stop offset="0%" stop-color="#2c0800"/><stop offset="100%" stop-color="#0f0000"/></radialGradient>
+          <radialGradient id="ttum" cx="38%" cy="30%"><stop offset="0%" stop-color="#4a0000"/><stop offset="100%" stop-color="#150000"/></radialGradient>
+          <marker id="ta1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#c9a84c" opacity="0.6"/></marker>
+          <marker id="ta2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#8b1a1a" opacity="0.8"/></marker>
+          <marker id="ta3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#3d3b35"/></marker>
+        </defs>
+        <rect width="820" height="310" fill="#0d0c0a" rx="6"/>
+        <rect x="0" y="0" width="820" height="40" fill="#111008" rx="6"/>
+        <rect x="0" y="37" width="820" height="3" fill="#8b1a1a" opacity="0.75"/>
+        <text x="26" y="25" font-family="'Bebas Neue',sans-serif" font-size="14" fill="#c9a84c" letter-spacing="3">CASE TIMELINE</text>
+        <text x="140" y="25" font-family="'Courier Prime',monospace" font-size="10" fill="#4a4840" letter-spacing="1.5">·  MUTATION ACCUMULATION  ·  STEM CELL DIVISION TO TUMOUR</text>
+        <!-- Arrows -->
+        <line x1="148" y1="148" x2="210" y2="148" stroke="#c9a84c" stroke-width="1.5" marker-end="url(#ta1)" opacity="0.55"/>
+        <line x1="284" y1="148" x2="346" y2="148" stroke="#c9a84c" stroke-width="1.5" marker-end="url(#ta1)" opacity="0.55"/>
+        <line x1="420" y1="148" x2="482" y2="148" stroke="#c9a84c" stroke-width="1.5" marker-end="url(#ta1)" opacity="0.55"/>
+        <line x1="556" y1="148" x2="620" y2="148" stroke="#8b1a1a" stroke-width="1.8" marker-end="url(#ta2)" opacity="0.7"/>
+        <text x="179" y="136" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#4a4840">division</text>
+        <text x="315" y="136" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#4a4840">division</text>
+        <text x="451" y="136" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#4a4840">division</text>
+        <text x="588" y="134" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#8b1a1a">threshold</text>
+        <text x="588" y="144" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="7.5" fill="#8b1a1a">crossed</text>
+        <!-- Cell 0 — stem -->
+        <circle cx="110" cy="148" r="35" fill="url(#tc0)" stroke="#c9a84c" stroke-width="2" filter="url(#tg1)"/>
+        <ellipse cx="110" cy="142" rx="14" ry="12" fill="#2a2000" stroke="#c9a84c" stroke-width="1.2" opacity="0.9"/>
+        <path d="M 103,137 C 107,131 113,131 117,137 C 113,143 107,143 103,137" stroke="#c9a84c" stroke-width="0.9" fill="none" opacity="0.55"/>
+        <text x="110" y="194" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9.5" fill="#c9a84c" font-weight="700">STEM CELL</text>
+        <text x="110" y="207" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">normal division</text>
+        <!-- Cell 1 -->
+        <circle cx="246" cy="148" r="35" fill="url(#tc1)" stroke="#c8a060" stroke-width="2"/>
+        <ellipse cx="246" cy="142" rx="14" ry="12" fill="#281800" stroke="#c8a060" stroke-width="1.2" opacity="0.9"/>
+        <circle cx="256" cy="135" r="5.5" fill="#7a2a1a" opacity="0.95" filter="url(#tg3)"/>
+        <line x1="253" y1="132" x2="259" y2="138" stroke="#ffb3a0" stroke-width="1.6"/><line x1="259" y1="132" x2="253" y2="138" stroke="#ffb3a0" stroke-width="1.6"/>
+        <text x="246" y="194" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9.5" fill="#c8a060" font-weight="700">MUTATION 1</text>
+        <text x="246" y="207" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">1st driver gene</text>
+        <!-- Cell 2 -->
+        <circle cx="382" cy="148" r="35" fill="url(#tc2)" stroke="#c07a40" stroke-width="2"/>
+        <ellipse cx="382" cy="142" rx="14" ry="12" fill="#261200" stroke="#c07a40" stroke-width="1.2" opacity="0.9"/>
+        <circle cx="392" cy="135" r="5" fill="#7a2a1a" opacity="0.9" filter="url(#tg3)"/>
+        <line x1="389" y1="132" x2="395" y2="138" stroke="#ffb3a0" stroke-width="1.5"/><line x1="395" y1="132" x2="389" y2="138" stroke="#ffb3a0" stroke-width="1.5"/>
+        <circle cx="373" cy="149" r="5" fill="#7a2a1a" opacity="0.9" filter="url(#tg3)"/>
+        <line x1="370" y1="146" x2="376" y2="152" stroke="#ffb3a0" stroke-width="1.5"/><line x1="376" y1="146" x2="370" y2="152" stroke="#ffb3a0" stroke-width="1.5"/>
+        <text x="382" y="194" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9.5" fill="#c07a40" font-weight="700">MUTATION 2</text>
+        <text x="382" y="207" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">clone expanding</text>
+        <!-- Cell 3 -->
+        <circle cx="518" cy="148" r="35" fill="url(#tc3)" stroke="#b04828" stroke-width="2"/>
+        <ellipse cx="518" cy="142" rx="14" ry="12" fill="#220800" stroke="#b04828" stroke-width="1.2" opacity="0.9"/>
+        <circle cx="528" cy="135" r="4.5" fill="#7a2a1a" opacity="0.9" filter="url(#tg3)"/><line x1="525" y1="132" x2="531" y2="138" stroke="#ffb3a0" stroke-width="1.4"/><line x1="531" y1="132" x2="525" y2="138" stroke="#ffb3a0" stroke-width="1.4"/>
+        <circle cx="509" cy="146" r="4.5" fill="#7a2a1a" opacity="0.9" filter="url(#tg3)"/><line x1="506" y1="143" x2="512" y2="149" stroke="#ffb3a0" stroke-width="1.4"/><line x1="512" y1="143" x2="506" y2="149" stroke="#ffb3a0" stroke-width="1.4"/>
+        <circle cx="526" cy="151" r="4.5" fill="#7a2a1a" opacity="0.9" filter="url(#tg3)"/><line x1="523" y1="148" x2="529" y2="154" stroke="#ffb3a0" stroke-width="1.4"/><line x1="529" y1="148" x2="523" y2="154" stroke="#ffb3a0" stroke-width="1.4"/>
+        <text x="518" y="194" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="9.5" fill="#b04828" font-weight="700">MUTATION 3</text>
+        <text x="518" y="207" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#6b6355">near threshold</text>
+        <!-- Tumour -->
+        <circle cx="674" cy="148" r="50" fill="none" stroke="#8b1a1a" stroke-width="0.8" opacity="0.12" filter="url(#tg2)"/>
+        <circle cx="674" cy="148" r="40" fill="url(#ttum)" stroke="#8b1a1a" stroke-width="2.2" filter="url(#tg2)"/>
+        <circle cx="655" cy="130" r="15" fill="#3a0000" stroke="#8b1a1a" stroke-width="1.3" opacity="0.85"/>
+        <circle cx="692" cy="128" r="12" fill="#3a0000" stroke="#8b1a1a" stroke-width="1.2" opacity="0.8"/>
+        <circle cx="700" cy="160" r="11" fill="#3a0000" stroke="#8b1a1a" stroke-width="1.1" opacity="0.75"/>
+        <circle cx="657" cy="163" r="10" fill="#3a0000" stroke="#8b1a1a" stroke-width="1" opacity="0.7"/>
+        <circle cx="666" cy="142" r="9" fill="#5a0000" stroke="#8b1a1a" stroke-width="0.9" opacity="0.95"/>
+        <circle cx="683" cy="150" r="7" fill="#5a0000" stroke="#8b1a1a" stroke-width="0.9" opacity="0.85"/>
+        <text x="674" y="202" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="13" fill="#8b1a1a" letter-spacing="2" filter="url(#tg2)">TUMOUR</text>
+        <text x="674" y="217" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="13" fill="#8b1a1a" letter-spacing="2" filter="url(#tg2)">INITIATION</text>
+        <!-- Time axis -->
+        <line x1="60" y1="244" x2="780" y2="244" stroke="#2a2820" stroke-width="1.2" marker-end="url(#ta3)"/>
+        <line x1="110" y1="240" x2="110" y2="247" stroke="#3d3b35" stroke-width="1"/>
+        <line x1="246" y1="240" x2="246" y2="247" stroke="#3d3b35" stroke-width="1"/>
+        <line x1="382" y1="240" x2="382" y2="247" stroke="#3d3b35" stroke-width="1"/>
+        <line x1="518" y1="240" x2="518" y2="247" stroke="#3d3b35" stroke-width="1"/>
+        <line x1="674" y1="240" x2="674" y2="247" stroke="#8b1a1a" stroke-width="1.5"/>
+        <line x1="110" y1="185" x2="110" y2="242" stroke="#2a2820" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="246" y1="185" x2="246" y2="242" stroke="#2a2820" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="382" y1="185" x2="382" y2="242" stroke="#2a2820" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="518" y1="185" x2="518" y2="242" stroke="#2a2820" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="674" y1="190" x2="674" y2="242" stroke="#8b1a1a" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+        <text x="60" y="260" font-family="'Courier Prime',monospace" font-size="8" fill="#3d3b35">birth</text>
+        <text x="410" y="260" text-anchor="middle" font-family="'Courier Prime',monospace" font-size="8" fill="#3d3b35">years  ——→  decades</text>
+        <text x="774" y="260" text-anchor="end" font-family="'Courier Prime',monospace" font-size="8" fill="#3d3b35">70s+</text>
+        <!-- Note -->
+        <rect x="24" y="270" width="772" height="28" rx="3" fill="#111008" stroke="#2a2820" stroke-width="1"/>
+        <circle cx="40" cy="284" r="3" fill="#c9a84c" opacity="0.7"/>
+        <text x="50" y="288" font-family="'Courier Prime',monospace" font-size="8.5" fill="#c8b88a">Each division: ~1–2 replication errors · Most harmless · Some hit growth-control genes · Those are the ones that matter</text>
+        <rect x="1" y="1" width="818" height="308" fill="none" stroke="#2a2820" stroke-width="1.5" rx="6"/>
+      </svg>
+      <figcaption>"Mutations accumulate gradually as stem cells divide over time — tumour initiation requires multiple driver mutations in key genes, which is why cancer is primarily a disease of ageing."</figcaption>
+    </div>
+
+    <p>This is where the investigation takes an unexpected turn. The cell responsible for maintaining tissues and keeping the body alive may also provide the conditions under which cancer can emerge. The stem cell — once seen as the body's maintenance worker — now begins to look like a key suspect in the case.</p>
+
+    <p class="hook">As a detective, I must wonder: if stem cells are so important for survival, why has evolution not eliminated the mechanism that causes cancer to develop?</p>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <p>Clevers, H. (2011). The cancer stem cell: premises, promises and challenges. <em>Nature Medicine, 17</em>(3), 313–319.</p>
+      <p>Greaves, M., &amp; Maley, C. C. (2012). Clonal evolution in cancer. <em>Nature, 481</em>(7381), 306–313.</p>
+      <p>Poliwoda, S. et al. (2022). Stem cells: A comprehensive review of origins and emerging clinical roles. <em>Orthopedic Reviews, 14</em>(3).</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(0)">← Previous</button>
+    <span class="nav-pg">01 / 06</span>
+    <button class="nav-btn" onclick="goChapter(2)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 02 — EVOLUTIONARY TRADE-OFF
+══════════════════════════════════════ -->
+<div class="chapter" id="ch2">
+  <div class="ch-label">Chapter 02 · Evolutionary Trade-Off</div>
+  <div class="ch-title">The Long Game</div>
+  <div class="ch-flavor">In which we discover the suspect is also the body's most essential employee</div>
+  <div class="story">
+
+    <p class="narration">By the case folder, I could already tell this suspect was extraordinary. Most cells in this city live by the rules — dividing when told, stopping when signalled, dying when damaged. But for stem cells, they operate under a different set of permissions.</p>
+
+    <p>The same features that make stem cells indispensable also make them dangerous. Rapid proliferation keeps tissues supplied with fresh cells, but every additional division creates another opportunity for replication error. Self-renewal prevents the stem pool from being depleted — but it also means any mutation that appears in a stem cell can be preserved and copied forward indefinitely. Resistance to cell death protects valuable regenerative cells during stress, yet that same survival capacity can become a liability if the wrong genetic changes accumulate (Reya et al., 2001).</p>
+
+    <div class="case-file">
+      <h4>The Double Agent: Stem Cell Traits as a Trade-Off</h4>
+      <table class="ev-table" style="margin:0;">
+        <thead><tr><th>Stem Cell Trait</th><th>Benefit to Survival</th><th>Cancer Risk</th></tr></thead>
+        <tbody>
+          <tr><td>Rapid proliferation</td><td>Keeps tissues supplied with fresh cells; gut lining renewed every 4–5 days</td><td>Every division is a new opportunity for replication error</td></tr>
+          <tr><td>Self-renewal</td><td>Prevents stem pool depletion; ensures lifelong tissue maintenance</td><td>Mutations in stem cells are preserved and copied to all daughter cells indefinitely</td></tr>
+          <tr><td>Apoptosis resistance</td><td>Protects regenerative cells during stress, injury, or nutrient deprivation</td><td>TP53 mutation (>50% of cancers) makes apoptosis resistance permanent and unconditional</td></tr>
+          <tr><td>Telomerase activity</td><td>Prevents telomere shortening during repeated divisions; chromosomal stability</td><td>~85–90% of cancers reactivate telomerase (TERT) to achieve replicative immortality</td></tr>
+          <tr><td>Epigenetic plasticity</td><td>Open chromatin state allows differentiation into multiple cell types</td><td>Cancer cells exploit plasticity to dedifferentiate back to stem-like states</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>To put it into simpler terms: the system that protects the body simultaneously carries a built-in vulnerability. When mutations occur in long-lived stem cells, they can persist for decades. A single mutation arising in a stem cell can be inherited by many future cells within the same tissue. Over time, the gradual accumulation of mutations increases the probability that certain cells may escape normal growth controls.</p>
+
+    <p>The evidence shows the same system viewed across different time scales. In the short term, stem cell traits support survival. Over decades of repeated divisions, the accumulation of replication errors becomes increasingly likely. Occasionally, mutations affect genes that regulate cell growth or survival — giving certain cells a small advantage over their neighbours (Greaves &amp; Maley, 2012).</p>
+
+    <p>Research comparing different tissues has shown that organs with higher numbers of lifetime stem cell divisions tend to show higher cancer incidence. This suggests that normal tissue maintenance itself contributes to the probability that mutations will eventually arise in key regulatory genes.</p>
+
+    <p class="hook">From an evolutionary perspective, this reflects a fundamental biological compromise.</p>
+
+    <p>Natural selection favours traits that improve survival and reproductive success early in life. Stem cells play a critical role in this process. However, the same biological traits that provide these benefits may carry long-term costs that appear later in life — when natural selection is weaker.</p>
+
+    <p>This evolutionary compromise is known as <span class="term">antagonistic pleiotropy</span> — a single biological trait provides advantages early in life but produces harmful consequences later. Stem cell biology fits this pattern well. The capacity for self-renewal, rapid proliferation, and long-term persistence allows tissues to function across decades. Yet those same properties create the conditions under which cancer can eventually emerge (Aktipis et al., 2015).</p>
+
+    <p>The genes associated with these processes tell the same story. One of the most researched examples is <span class="term">TP53</span> — often described as the "guardian of the genome." Its function is to detect DNA damage and trigger apoptosis in cells that are too damaged to repair. TP53 is the most frequently mutated gene in human cancers, with mutation occurring in more than half of all tumours (Vousden &amp; Prives, 2009).</p>
+
+    <p>Interestingly, TP53 itself illustrates the trade-off. Studies in mice have shown that increasing TP53 activity — making the brakes stronger — does reduce cancer incidence, but at a cost: accelerated ageing. Too much suppression of cell renewal leads to tissue degeneration and premature senescence. The body must balance tumour suppression against the need for ongoing tissue repair — too much braking is just as dangerous as too little (Tyner et al., 2002).</p>
+
+    <div class="telegram">
+      <p>The body did not evolve stem cells to cause disease. Cancer emerged as an unintended consequence of biological systems that were selected because they help organisms survive. <strong>STOP</strong> — The benefits appear immediately: tissues regenerate, wounds heal, organs continue functioning. The costs may only become visible decades later. <strong>STOP</strong> — This is the trade-off that multicellular life accepts. <strong>STOP</strong></p>
+    </div>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <p>Aktipis, C. A. et al. (2015). Cancer across the tree of life. <em>Philosophical Transactions of the Royal Society B, 370</em>(1673), 20140219.</p>
+      <p>Reya, T. et al. (2001). Stem cells, cancer, and cancer stem cells. <em>Nature, 414</em>(6859), 105–111.</p>
+      <p>Vousden, K. H., &amp; Prives, C. (2009). Blinded by the Light: The Growing Complexity of p53. <em>Cell, 137</em>(3), 413–431.</p>
+      <p>Tyner, S. D. et al. (2002). p53 mutant mice that display early ageing-associated phenotypes. <em>Nature, 415</em>(6867), 45–53.</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(1)">← Previous</button>
+    <span class="nav-pg">02 / 06</span>
+    <button class="nav-btn" onclick="goChapter(3)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 03 — SOMATIC EVOLUTION
+══════════════════════════════════════ -->
+<div class="chapter" id="ch3">
+  <div class="ch-label">Chapter 03 · Somatic Evolution</div>
+  <div class="ch-title">Evolution's Black Market</div>
+  <div class="ch-flavor">In which we discover the body has been running its own underground evolution for decades</div>
+  <div class="story">
+
+    <p class="narration">I have been on this beat long enough to know that crime doesn't appear out of nowhere. It organises itself. It evolves. A mutation that starts as a minor bookkeeping error becomes, twenty years later, the operation controlling the entire district.</p>
+
+    <p>Cancer works in much the same way. It doesn't emerge all at once — it develops gradually. It is a process. A Darwinian evolutionary process, taking place within the tissue of a single organism, often over many years or even decades. And for evolution to run, three ingredients are required. When I checked the file, the tumour had all three.</p>
+
+    <div class="case-file">
+      <h4>Darwin's Three Conditions — Met by the Tumour</h4>
+      <ul>
+        <li><strong>Variation:</strong> Every stem cell division introduces somatic mutations — genetic differences between cells within a tissue. No two cells in an aged stem cell compartment are genetically identical. Raw material for selection is continuously generated.</li>
+        <li><strong>Heritability:</strong> When a stem cell divides, its mutations are passed to daughter cells. An advantageous mutation propagates through the entire descendant lineage. Traits are heritable at the cellular level.</li>
+        <li><strong>Differential reproduction:</strong> A cell with a mutation giving it a growth advantage — faster division, resistance to apoptosis, evasion of immune surveillance — outcompetes its neighbours. Its lineage expands.</li>
+      </ul>
+    </div>
+
+    <p>A tumour is not a uniform mass of identical abnormal cells. Rather, it represents a population — a Darwinian ecosystem characterised by genetic diversity and ongoing selection pressure. Different regions of the same tumour often carry distinct mutation profiles, while subclonal populations compete within the tumour microenvironment. Cells with advantageous traits dominate the population.</p>
+
+    <p>Even a small growth advantage compounds dramatically over cellular generations. Small consistent advantages become dominant clones over months to years. This is why cancer is primarily associated with ageing — somatic evolution takes time, and long-lived humans provide that time (Alberts et al., 2002).</p>
+
+    <!-- GRAPHIC — TUMOUR HETEROGENEITY -->
+    <div class="graphic-block">
+      <svg viewBox="0 0 820 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="hg1"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect width="820" height="300" fill="#0d0c0a" rx="6"/>
+        <rect x="0" y="0" width="820" height="40" fill="#111008" rx="6"/>
+        <rect x="0" y="37" width="820" height="3" fill="#8b1a1a" opacity="0.75"/>
+        <text x="26" y="25" font-family="'Bebas Neue',sans-serif" font-size="14" fill="#c9a84c" letter-spacing="3">EVIDENCE</text>
+        <text x="120" y="25" font-family="'Courier Prime',monospace" font-size="10" fill="#4a4840" letter-spacing="1.5">· TUMOUR HETEROGENEITY · THE CRIMINAL ENTERPRISE</text>
+        <!-- Tumour mass outline -->
+        <ellipse cx="410" cy="170" rx="200" ry="110" fill="none" stroke="#3a0a0a" stroke-width="2" stroke-dasharray="6,4" opacity="0.5"/>
+        <!-- Subclone A — dominant (gold) -->
+        <circle cx="340" cy="140" r="28" fill="#1a1400" stroke="#c9a84c" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="310" cy="170" r="22" fill="#1a1400" stroke="#c9a84c" stroke-width="1.2" opacity="0.8"/>
+        <circle cx="355" cy="175" r="20" fill="#1a1400" stroke="#c9a84c" stroke-width="1.2" opacity="0.75"/>
+        <circle cx="325" cy="200" r="18" fill="#1a1400" stroke="#c9a84c" stroke-width="1" opacity="0.7"/>
+        <circle cx="360" cy="205" r="15" fill="#1a1400" stroke="#c9a84c" stroke-width="1" opacity="0.65"/>
+        <!-- Subclone B — resistant (red) -->
+        <circle cx="450" cy="130" r="24" fill="#1a0000" stroke="#8b1a1a" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="480" cy="155" r="20" fill="#1a0000" stroke="#8b1a1a" stroke-width="1.3" opacity="0.85"/>
+        <circle cx="455" cy="165" r="16" fill="#1a0000" stroke="#8b1a1a" stroke-width="1.2" opacity="0.75"/>
+        <!-- Subclone C — minor (steel) -->
+        <circle cx="420" cy="200" r="18" fill="#001020" stroke="#5a9ab0" stroke-width="1.3" opacity="0.8"/>
+        <circle cx="395" cy="185" r="14" fill="#001020" stroke="#5a9ab0" stroke-width="1" opacity="0.7"/>
+        <!-- Subclone D — new (green) -->
+        <circle cx="500" cy="190" r="12" fill="#0a1a0a" stroke="#6a9a6a" stroke-width="1.2" opacity="0.75"/>
+        <circle cx="485" cy="210" r="10" fill="#0a1a0a" stroke="#6a9a6a" stroke-width="1" opacity="0.6"/>
+        <!-- Legend -->
+        <circle cx="640" cy="80" r="8" fill="#1a1400" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="655" y="84" font-family="'Courier Prime',monospace" font-size="9" fill="#c9a84c">Clone A — dominant founder</text>
+        <circle cx="640" cy="108" r="8" fill="#1a0000" stroke="#8b1a1a" stroke-width="1.5"/>
+        <text x="655" y="112" font-family="'Courier Prime',monospace" font-size="9" fill="#8b1a1a">Clone B — drug-resistant</text>
+        <circle cx="640" cy="136" r="8" fill="#001020" stroke="#5a9ab0" stroke-width="1.5"/>
+        <text x="655" y="140" font-family="'Courier Prime',monospace" font-size="9" fill="#5a9ab0">Clone C — minor subclone</text>
+        <circle cx="640" cy="164" r="8" fill="#0a1a0a" stroke="#6a9a6a" stroke-width="1.2"/>
+        <text x="655" y="168" font-family="'Courier Prime',monospace" font-size="9" fill="#6a9a6a">Clone D — newly emerging</text>
+        <!-- Note strip -->
+        <rect x="24" y="248" width="772" height="38" rx="4" fill="#111008" stroke="#2a2820" stroke-width="1"/>
+        <circle cx="40" cy="267" r="3" fill="#c9a84c" opacity="0.7"/>
+        <text x="50" y="271" font-family="'Courier Prime',monospace" font-size="8.5" fill="#c8b88a">A single tumour contains multiple competing subclones — each with distinct mutations, forming an evolving ecosystem</text>
+        <rect x="1" y="1" width="818" height="298" fill="none" stroke="#2a2820" stroke-width="1.5" rx="6"/>
+      </svg>
+      <figcaption>"A tumour is not a single criminal — it is an organised syndicate. Multiple subclonal populations with distinct mutation profiles compete for dominance within the same tissue."</figcaption>
+    </div>
+
+    <p>But not every mutant cell becomes a full-blown criminal operation. The body's immune system and tissue architecture act as a police force. Many early growths — benign polyps, small adenomas — are the cellular equivalent of petty offenders: they accumulate a few mutations but never acquire the full set needed to become invasive. These are effectively <em>neutral</em> in evolutionary terms — present, but not expanding aggressively. Others are caught and eliminated entirely by immune surveillance or by triggering their own apoptosis programmes. This is <span class="term">negative selection</span> operating at the somatic level — cells with certain harmful mutations are removed before they can proliferate. We may develop and eliminate pre-cancerous cells many times during a normal lifetime without ever knowing it (Martincorena et al., 2015).</p>
+
+    <h3>The Treatment Problem</h3>
+
+    <p>Here is what makes this case particularly hard to close. <strong>Treatment becomes part of the crime scene.</strong></p>
+
+    <p>Chemotherapy acts as a strong selective pressure on this evolving population. A drug that kills 95% of a tumour does not end the evolutionary process — it changes it. The majority of drug-sensitive cells die, but that 5% that may carry pre-existing resistance mutations suddenly have access to more space and nutrients with less competition. These surviving cells expand and undergo clonal selection. Over time, the resistant clones can become the dominant population — demonstrating evolution in action. This is why treatment can unintentionally drive the selection of drug-resistant cancer cells and lead to tumour recurrence (O'Brien et al., 2006).</p>
+
+    <p>The cancer didn't develop resistance. It was <em>selected</em> for it. The resistant subclone was always there, a minor variant in the tumour population, waiting for the right conditions to expand.</p>
+
+    <div class="telegram">
+      <p>This is why the most promising new approach — <strong>adaptive therapy</strong> — doesn't aim to eradicate the tumour completely. Instead, it focuses on managing it. Keeping a stable population of treatment-sensitive cells alive so they continue to compete with resistant clones. By doing this, the tumour's own evolutionary dynamics become a weapon against it. <strong>STOP</strong> — Gatenby et al. (2009) showed this approach in clinical trials. Darwin's racket, turned against itself. <strong>STOP</strong></p>
+    </div>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <p>Alberts B. et al. (2002). <em>Molecular Biology of the Cell</em> (4th ed.). Garland Science.</p>
+      <p>Gatenby, R. A. et al. (2009). Adaptive therapy. <em>Cancer Research, 69</em>(11), 4894–4903.</p>
+      <p>Martincorena, I. et al. (2015). High burden and pervasive positive selection of somatic mutations in normal human skin. <em>Science, 348</em>(6237), 880–886.</p>
+      <p>O'Brien, M. E. et al. (2006). Mortality within 30 days of chemotherapy. <em>British Journal of Cancer, 95</em>(12), 1632–1636.</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(2)">← Previous</button>
+    <span class="nav-pg">03 / 06</span>
+    <button class="nav-btn" onclick="goChapter(4)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 04 — SCIENTIFIC DISPUTES
+══════════════════════════════════════ -->
+<div class="chapter" id="ch4">
+  <div class="ch-label">Chapter 04 · Scientific Disputes</div>
+  <div class="ch-title">Conflicting Witnesses</div>
+  <div class="ch-flavor">In which the witnesses disagree — and both have a point</div>
+  <div class="story">
+
+    <p>No case is totally clean. Witnesses contradict each other; evidence can point two ways at once. A good detective views both contradictions and doesn't ignore them. Here are the open disputes on the file.</p>
+
+    <div class="dispute-h">Dispute 01 — Bad Luck vs. Lifestyle</div>
+    <p style="color:var(--dim);font-size:0.85rem;margin-bottom:1rem;">How much of cancer risk comes from intrinsic cell division vs. the environment?</p>
+    <div class="dossier">
+      <div class="dossier-card for">
+        <h5>Witness A · The Intrinsic Division View</h5>
+        <p>Tomasetti and Vogelstein (2015) compared cancer incidence across many tissue types and found that tissues undergoing more lifetime stem cell divisions tend to have higher cancer rates regardless of known environmental exposures. The majority of driver mutations arise not from environmental mutagens but from unavoidable replication errors. Every stem cell division must copy its DNA, and over decades these errors accumulate. Many cancers don't arise primarily from external exposures but from the unavoidable mathematics of DNA replication (Tomasetti et al., 2017).</p>
+      </div>
+      <div class="dossier-card against">
+        <h5>Witness B · Environment Matters</h5>
+        <p>The "bad luck" framing was criticised for not appropriately weighing environmental and lifestyle contributions — especially for cancers with well-established environmental causes such as lung cancer, hepatocellular carcinoma, and skin cancer (Couzin-Frankel, 2015). Factors such as tobacco, UV radiation, chronic infection, and diet can amplify the baseline mutation rate well beyond what stem cell divisions alone would produce (Song &amp; Giovannucci, 2016; Wu et al., 2016). Calling it bad luck takes away from the real preventive value of lifestyle and policy interventions.</p>
+      </div>
+    </div>
+    <div class="assessment"><strong>Mark's Assessment:</strong> Both witnesses are telling the truth about different parts of the same case. Intrinsic replication errors set a baseline cancer risk that exists even without environmental exposure. Environmental factors act to elevate that baseline. The framework explains the floor; environment explains why some people hit it much sooner.</div>
+
+    <div class="dispute-h">Dispute 02 — Does a Boss Cell Run the Tumour?</div>
+    <div class="dossier">
+      <div class="dossier-card for">
+        <h5>Witness A · The Hierarchy Model</h5>
+        <p>According to the cancer stem cell (CSC) model, tumours are organised like a hierarchy. A small subpopulation of cancer stem cells — identified by markers like CD44+/CD24− in breast cancer and CD133+ in glioblastoma — maintain the tumour, drive regrowth after treatment, and are responsible for metastasis (Al-Hajj et al., 2003; Singh et al., 2003). Take out the CSC subpopulation and you take out the operation. Strong evidence in leukaemia, glioblastoma, and breast cancer supports this model (Lapidot et al., 1994).</p>
+      </div>
+      <div class="dossier-card against">
+        <h5>Witness B · The Plasticity Model</h5>
+        <p>Others argue the hierarchy is not fixed. Under stress — especially after chemotherapy — ordinary tumour cells can dedifferentiate and revert to a stem-cell-like state. CSC identity is a dynamic state, not a defined subpopulation. Targeting surface markers alone won't eliminate the operation because remaining cells can re-acquire stem-like properties. The hierarchy exists, but it is fluid (Gupta et al., 2011).</p>
+      </div>
+    </div>
+    <div class="assessment"><strong>Mark's Assessment:</strong> Evidence suggests both models operate simultaneously. The hierarchy and plasticity models aren't mutually exclusive. What matters more depends on tumour type and clinical context. The case is still open.</div>
+
+    <div class="dispute-h">Dispute 03 — Is Antagonistic Pleiotropy the Right Framework?</div>
+    <div class="dossier">
+      <div class="dossier-card for">
+        <h5>Witness A · The Trade-Off Framework</h5>
+        <p>Supporters argue that stem cell properties are actively maintained by selection throughout reproductive life — they are not neutral post-reproductive drift (Williams, 1957). Cancer affects reproductive-age individuals too, so the cost is not exclusively post-reproductive. Rapid division and self-renewal keep organisms alive long enough to reproduce; cancer risk is tied to these same properties. This represents an evolutionary trade-off with benefits early and costs later (Ungewitter &amp; Scrable, 2008).</p>
+      </div>
+      <div class="dossier-card against">
+        <h5>Witness B · Neutral Drift Argument</h5>
+        <p>Others argue the story may be simpler. If most cancer mortality occurs after reproductive age, then natural selection pressure against cancer-enabling properties is very weak (Medawar, 1952). The relationship between stem cells and cancer may not be a true evolutionary trade-off but rather a case of neutral late-life consequences of traits that selection simply can't see well enough to modify (Austad &amp; Hoffman, 2018).</p>
+      </div>
+    </div>
+    <div class="assessment"><strong>Mark's Assessment:</strong> A legitimate theoretical dispute. Some aspects of cancer risk reflect genuine trade-offs; others may be closer to neutral late-life consequences. The distinction matters for how we theorise about the evolutionary origins of cancer. The case is far from closed.</div>
+
+    <div class="sources">
+      <div class="sources-label">Sources</div>
+      <p>Al-Hajj, M. et al. (2003). Prospective identification of tumorigenic breast cancer cells. <em>PNAS, 100</em>(7), 3983–3988.</p>
+      <p>Austad, S. N., &amp; Hoffman, J. M. (2018). Is antagonistic pleiotropy ubiquitous in aging biology? <em>Evolution, Medicine, and Public Health, 2018</em>(1), 287–294.</p>
+      <p>Couzin-Frankel, J. (2015). The bad luck of cancer. <em>Science, 347</em>(6217), 12–13.</p>
+      <p>Gupta, P. B. et al. (2011). Stochastic state transitions give rise to phenotypic equilibrium. <em>Cell, 146</em>(4), 633–644.</p>
+      <p>Lapidot, T. et al. (1994). A cell initiating human acute myeloid leukaemia. <em>Nature, 367</em>(6464), 645–648.</p>
+      <p>Medawar, P. B. (1952). <em>An unsolved problem of biology.</em> H. K. Lewis.</p>
+      <p>Singh, S. K. et al. (2003). Identification of a cancer stem cell in human brain tumors. <em>Cancer Research, 63</em>(18), 5821–5828.</p>
+      <p>Tomasetti, C., &amp; Vogelstein, B. (2015). Variation in cancer risk among tissues. <em>Science, 347</em>(6217), 78–81.</p>
+      <p>Tomasetti, C., Li, L., &amp; Vogelstein, B. (2017). Stem cell divisions, somatic mutations, cancer etiology. <em>Science, 355</em>(6331), 1330–1334.</p>
+      <p>Ungewitter, E., &amp; Scrable, H. (2008). Antagonistic pleiotropy and p53. <em>Mechanisms of Ageing and Development, 129</em>(6), 332–339.</p>
+      <p>Williams, G. C. (1957). Pleiotropy, natural selection, and the evolution of senescence. <em>Evolution, 11</em>(4), 398–411.</p>
+      <p>Wu, S. et al. (2016). Substantial contribution of extrinsic risk factors to cancer development. <em>Nature, 529</em>(7584), 43–47.</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(3)">← Previous</button>
+    <span class="nav-pg">04 / 06</span>
+    <button class="nav-btn" onclick="goChapter(5)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 05 — Q&A
+══════════════════════════════════════ -->
+<div class="chapter" id="ch5">
+  <div class="ch-label">Chapter 05 · Assessment</div>
+  <div class="ch-title">The Interrogation Room</div>
+  <div class="ch-flavor">Eight questions. One chair. No lawyer. Click to reveal each answer.</div>
+  <div class="story">
+    <p style="color:var(--dim);font-size:0.85rem;margin-bottom:2rem;">Click any question to reveal the answer. Badges indicate question type.</p>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q1. From an evolutionary perspective, why has natural selection not eliminated the cancer risk associated with stem cell division?</span>
+        <span class="qa-badge b-recall">recall</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>Stem cell division is essential for survival, and cancer predominantly occurs after reproduction. Evolution favours a balance between tissue regeneration and mutation risk rather than full protection from cancer. The properties that enable stem cells to maintain tissues — rapid division, self-renewal, apoptosis resistance — are the same properties that increase cancer probability over time. Natural selection cannot remove the cancer risk without also removing the survival benefit. This is the core of antagonistic pleiotropy as it applies to stem cell biology.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q2. Imagine a mutation occurs in a stem cell in the intestinal lining that increases its rate of division. Predict what might happen to the population of cells in that tissue over time, and explain why.</span>
+        <span class="qa-badge b-apply">apply</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>The mutated stem cell would undergo <strong>clonal expansion</strong> — because it divides faster than its neighbours, it gradually produces more daughter cells than surrounding normal stem cells. This gives it a <strong>competitive advantage</strong> within the intestinal crypt. As the clone expands, each subsequent division carries the original mutation plus new opportunities for additional errors, leading to <strong>increased mutation accumulation</strong>. In the intestinal lining specifically, this process can produce visible growths known as <strong>polyps</strong> — benign outgrowths that represent an early stage of clonal expansion. Most polyps remain benign, but if further mutations affect genes controlling growth regulation or apoptosis, the clone may eventually escape normal tissue constraints — increasing the probability of <strong>tumour formation</strong>. This is somatic evolution in action: variation, selection, and clonal expansion unfolding within a single tissue over time.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q3. If cancer exists, does it mean evolution failed to optimize the human body? True or False — explain your answer.</span>
+        <span class="qa-badge b-tf">true / false</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer — False</div>
+        <p><strong>False.</strong> Evolution does not optimise for longevity or freedom from disease — it optimises for reproductive success. The stem cell system that makes cancer possible is the same system that allows organisms to survive injuries, regenerate tissues, and live long enough to reproduce successfully. Cancer most often emerges late in life, after reproductive age, when natural selection exerts much weaker pressure. The existence of cancer does not indicate a failure of evolution — it reflects an inherent trade-off within a biological system that was well-optimised for the conditions under which it evolved. Evolution is not perfect or infallible, but it is remarkably effective: the human body coordinates 37 trillion cells across decades of life with extraordinary precision. Cancer is not evidence that the system is broken — it is evidence that even a very good system operating over enough time and enough divisions will occasionally produce errors that escape its controls.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q4. Most mutations that occur in cells are harmful. True or False — explain your answer.</span>
+        <span class="qa-badge b-tf">true / false</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer — False</div>
+        <p><strong>False.</strong> The vast majority of somatic mutations that accumulate across a lifetime are <strong>neutral</strong> — they occur in non-coding regions of the genome, or in coding regions where they do not alter protein function in a meaningful way. Only a small fraction of mutations — called <strong>driver mutations</strong> — affect genes that regulate cell growth or survival in ways that confer a selective advantage. Passenger mutations are far more common and do not directly contribute to cancer development. This distinction is why not every stem cell division leads to cancer, and why it typically takes decades and multiple driver mutations for a tumour to initiate.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q5. If adaptive therapy aims to control tumour evolution rather than eliminate the tumour, when might a physician still choose standard chemotherapy, and what factors would influence that decision?</span>
+        <span class="qa-badge b-think">critical thinking</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>A physician might still choose standard chemotherapy when:</p>
+        <p><strong>Tumour growth rate:</strong> If the tumour is growing rapidly and poses an immediate threat to organ function or life, aggressive elimination may take priority over evolutionary management.</p>
+        <p><strong>Risk of resistance:</strong> If the tumour shows low genetic heterogeneity and no pre-existing resistant subclones are detected, standard therapy may achieve durable remission before resistance can evolve.</p>
+        <p><strong>Patient condition and access to care:</strong> Adaptive therapy requires ongoing monitoring, imaging, and multiple treatment cycles over an extended period. If the patient cannot sustain long-term follow-up due to health status, geographic barriers, or the financial costs of sustained treatment, a more decisive upfront approach may be necessary. In healthcare systems where access is limited or treatment costs are a significant burden, the practicality of adaptive therapy may be reduced regardless of its theoretical advantages.</p>
+        <p><strong>Curability:</strong> For certain cancers (e.g., some leukaemias, testicular cancer, early-stage lymphomas), standard chemotherapy offers high cure rates. The goal shifts from managing evolution to eliminating the disease entirely. Adaptive therapy is most relevant for advanced, incurable cancers where long-term control is the realistic aim.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q6. A stem cell divides once per day in the intestinal crypt. Each division has a probability of approximately 1 × 10⁻⁹ of producing a specific driver mutation. How many divisions would it take for the cumulative probability of that mutation occurring to reach approximately 50%? What does this tell us about why cancer is a disease of ageing?</span>
+        <span class="qa-badge b-math">math / reasoning</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>We can model this using the complement rule. The probability that the specific mutation has <em>not</em> occurred after <em>n</em> divisions is (1 − 10⁻⁹)ⁿ. We want:</p>
+        <p>1 − (1 − 10⁻⁹)ⁿ = 0.5</p>
+        <p>Solving: (1 − 10⁻⁹)ⁿ = 0.5</p>
+        <p>Taking the natural log: n × ln(1 − 10⁻⁹) ≈ ln(0.5)</p>
+        <p>Since ln(1 − x) ≈ −x for small x: n × (−10⁻⁹) ≈ −0.693</p>
+        <p><strong>n ≈ 6.93 × 10⁸ divisions</strong> (approximately 693 million divisions).</p>
+        <p>At one division per day, this corresponds to roughly <strong>1.9 million years</strong> for a single stem cell. However, the intestinal epithelium contains thousands of independently dividing stem cells across many crypts. With ~10⁴ stem cells each dividing daily, the collective time to reach 50% probability drops to roughly <strong>190 years</strong> — still beyond a human lifespan for one specific mutation, but cancer requires multiple different driver mutations occurring in the <em>same lineage</em>. The mathematics show why cancer requires decades to develop, why it is predominantly a disease of ageing, and why tissues with more stem cell divisions (like the intestine and colon) have higher cancer incidence.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q7. Many people develop benign growths such as colon polyps or skin moles during their lifetime. Using the concepts from this project, explain why most benign growths never become cancerous.</span>
+        <span class="qa-badge b-apply">apply</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>Benign growths represent cells that have acquired one or a few mutations conferring a limited growth advantage — enough to expand clonally within a tissue but not enough to become invasive. Cancer typically requires the accumulation of <strong>multiple driver mutations</strong> (often 5–7 or more) affecting different pathways: growth signalling, apoptosis evasion, angiogenesis, immune evasion, and metastatic capability. Most benign growths stall at an early stage because they lack the full complement of mutations needed to overcome all of the body's layers of defence. Furthermore, the immune system provides <strong>negative selection</strong> against abnormal cells — many pre-cancerous clones are recognised and eliminated before they can progress. Benign growths like polyps are evidence that somatic evolution is occurring in our tissues throughout life, but also that the progression to full malignancy is a multi-step, low-probability process that most clonal expansions never complete.</p>
+      </div>
+    </div>
+
+    <div class="qa-item" onclick="this.classList.toggle('open')">
+      <div class="qa-q">
+        <span class="qa-q-text">Q8. Peto's paradox observes that large, long-lived animals like elephants and whales do not have proportionally higher cancer rates than smaller animals, despite having far more cells and more cell divisions. Using the evolutionary trade-off framework from this project, propose a hypothesis for why this might be the case.</span>
+        <span class="qa-badge b-think">critical thinking</span>
+        <span class="qa-arrow">▶</span>
+      </div>
+      <div class="qa-a">
+        <div class="qa-a-label">Answer</div>
+        <p>If cancer risk were purely a function of the number of cell divisions, then elephants (~100× more cells than humans) should have dramatically higher cancer rates — but they do not. One leading hypothesis is that <strong>large, long-lived species have evolved additional tumour suppressor mechanisms</strong> to compensate for their increased cell count. For example, elephants carry approximately 20 copies of the TP53 gene (compared to one copy in humans), giving their cells a much stronger apoptotic response to DNA damage (Abegglen et al., 2015). This suggests that natural selection <em>can</em> act to reduce cancer risk when the selective pressure is strong enough — i.e., when cancer threatens survival and reproduction in that species. Peto's paradox supports the antagonistic pleiotropy framework: different species have evolved different balances between tissue maintenance and cancer suppression, calibrated by natural selection to the demands of their body size and lifespan. Humans, with moderate body size and historically shorter lifespans, may not have faced the same selective pressure to evolve redundant tumour suppression as larger-bodied species.</p>
+      </div>
+    </div>
+
+    <div class="sources">
+      <div class="sources-label">Additional Sources (Q&amp;A)</div>
+      <p>Abegglen, L. M. et al. (2015). Potential mechanisms for cancer resistance in elephants and comparative cellular response to DNA damage in humans. <em>JAMA, 314</em>(17), 1850–1860.</p>
+    </div>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(4)">← Previous</button>
+    <span class="nav-pg">05 / 06</span>
+    <button class="nav-btn" onclick="goChapter(6)">Next Chapter →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CH 06 — CLOSING
+══════════════════════════════════════ -->
+<div class="chapter" id="ch6">
+  <div class="ch-label">Chapter 06 · Conclusion</div>
+  <div class="ch-title">Closing the File</div>
+  <div class="ch-flavor">In which Detective Mark files his final report — and the case remains open</div>
+  <div class="story">
+
+    <p>Six hundred million years. Hundreds of millions of organisms. The same crime, committed again and again, in every lineage of multicellular life that has ever existed. And after all this time working the case, here is what the evidence tells me.</p>
+
+    <p>Cancer is not a malfunction. It is not bad luck in a back alley. It is the predictable long-term consequence of the most important biological system the body has — the stem cell maintenance network that keeps every organ functioning across a human lifetime.</p>
+
+    <div class="case-file">
+      <h4>Summary of Evidence</h4>
+      <ul>
+        <li>Stem cells must divide continuously to maintain tissues. Each division risks a copying error. Over decades, these errors accumulate.</li>
+        <li>The properties that make stem cells essential — self-renewal, rapid proliferation, apoptosis resistance, telomerase activity — are the same properties that increase cancer probability over a long enough timeline.</li>
+        <li>This is antagonistic pleiotropy: evolution selected for traits that benefit survival and reproduction early in life, accepting the long-term cost of cancer that mostly appears after reproductive age.</li>
+        <li>Cancer progression itself follows Darwinian logic — somatic evolution, clonal selection, and treatment resistance are all expressions of natural selection operating at the cellular level.</li>
+        <li>The scientific community continues to debate the relative contributions of intrinsic replication errors vs. environmental factors, and whether cancer reflects true evolutionary trade-offs or neutral late-life drift.</li>
+      </ul>
+    </div>
+
+    <p>The body did not evolve to cause cancer. But the system it evolved to survive with carries cancer as an inescapable shadow. Evolution has had 600 million years to solve this problem.</p>
+
+    <p class="hook">It has not solved it — because from evolution's perspective, there is nothing to solve.</p>
+
+    <p>The deal is working exactly as intended. Organisms repair, regenerate, reproduce. The cancer bill arrives later. Natural selection, working on timescales of generations rather than lifetimes, has never had strong enough reason to intervene.</p>
+
+    <p>For us — the organisms living the full lifespan — the investigation continues. Understanding cancer as an evolutionary inevitability rather than a random malfunction changes how we think about prevention, treatment, and what it might mean to outsmart a system that has been running for longer than our species has existed.</p>
+
+    <p class="narration">And maybe, after all this time working the case, I have to ask myself a harder question: is this even a crime? Or is it just what happens when you give a cell the freedom to divide, renew, and persist — and then wait long enough? Perhaps cancer is not a malfunction or a villain. It is just a little too much citizen freedom in a system that depends on cooperation. Perhaps evolution did try to intervene in some lineages — and those life forms simply went extinct, taking their perfect cancer-proof design with them. We will never know. What we do know is that the organisms that survived, including us, survived precisely because they accepted the deal.</p>
+
+    <div class="telegram">
+      <p>The cancer cell cannot be permanently stopped. Not because we lack the tools — but because the tools and the crime are made of the same material. The genes that enable cancer are the genes that enable life. <strong>STOP</strong> — That is not a defeat. That is a briefing. And a briefing tells you what you are actually dealing with. <strong>STOP</strong></p>
+    </div>
+
+    <div class="course-box">
+      <div class="course-box-label">📚 Final Course Connection — HSCI 324</div>
+      <p>This case is a concrete example of the course theme: <strong>adaptations shaped by natural selection can carry disadvantages under certain circumstances.</strong> Stem cell properties were selected for their survival benefits across reproductive life. The disadvantage — cancer — becomes probable only over a long lifespan of accumulated divisions, appearing largely after the period of greatest selective pressure. The same evolutionary logic that built the system that keeps us alive also built the conditions under which cancer can emerge.</p>
+    </div>
+
+    <p style="color:var(--dim);font-size:0.85rem;margin-top:2rem;">— Detective Mark · Somatic Crimes Unit · Precinct 10<br>Case status: <em>Open — Indefinitely</em><br>Investigators: Belle Ng [301585580] · Martin Luu [301582666] · Pretty Gill [301584547]</p>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="goChapter(5)">← Previous</button>
+    <span class="nav-pg">06 / 06</span>
+    <button class="nav-btn" onclick="showTOC()">↩ Return to Dossier</button>
+  </div>
+</div>
+
+</div><!-- /book -->
+
+<footer>
+  <span>The Inside Job</span> · A Detective Story About Cancer as an Evolutionary Trade-Off<br>
+  HSCI 324 · Human Population Genetics &amp; Evolution · Belle Ng [301585580] · Martin Luu [301582666] · Pretty Gill [301584547]
+</footer>
+
+<script>
+// ── RAIN ──
+const canvas = document.getElementById('rain');
+const ctx = canvas.getContext('2d');
+let drops = [];
+function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+resize(); window.addEventListener('resize',resize);
+for(let i=0;i<130;i++) drops.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,speed:1.5+Math.random()*3,len:8+Math.random()*18,op:0.15+Math.random()*0.45});
+function rain(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drops.forEach(d=>{
+    ctx.beginPath(); ctx.moveTo(d.x,d.y); ctx.lineTo(d.x-1,d.y+d.len);
+    ctx.strokeStyle=`rgba(180,160,100,${d.op})`; ctx.lineWidth=0.6; ctx.stroke();
+    d.y+=d.speed; if(d.y>canvas.height){d.y=-d.len;d.x=Math.random()*canvas.width;}
+  });
+  requestAnimationFrame(rain);
+}
+rain();
+
+// ── NAVIGATION ──
+function startReading(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('toc').classList.add('visible');
+  updatePg(0);
+}
+function showTOC(){
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('visible'));
+  document.getElementById('toc').classList.add('visible');
+  updatePg(0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goChapter(n){
+  document.getElementById('toc').classList.remove('visible');
+  document.querySelectorAll('.chapter').forEach(c=>c.classList.remove('visible'));
+  document.getElementById('ch'+n).classList.add('visible');
+  document.querySelectorAll('.toc-row').forEach((r,i)=>r.classList.toggle('active',i===n));
+  updatePg((n+1)/7);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updatePg(f){ document.getElementById('pgbar').style.width=(f*100)+'%'; }
+</script>
+</body>
+</html>
